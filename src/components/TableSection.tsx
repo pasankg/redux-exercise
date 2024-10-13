@@ -1,48 +1,78 @@
-import { Table, TableProps } from "antd";
+import { Table } from "antd";
+import type { TableColumnsType } from "antd";
 import { UserType } from "../types";
-import UserRecords from "../assets/users.json";
-import React from "react";
+// import UserRecords from "../assets/users.json";
+import React, { useMemo } from "react";
+import { useGetUsersQuery } from "../quries";
+import { map } from "lodash";
+/* 
 
-const columns: TableProps<UserType>["columns"] = [
+interface TableColumnsType<T> {
+  title: string,
+  dataIndex: T[key]
+  
+}
+
+*/
+
+const columns: TableColumnsType<UserType> = [
   {
     title: "First Name",
-    dataIndex: "firstName",
-    key: "firstName",
+    dataIndex: "name",
+    key: "name",
     render: (text) => <span>{text}</span>,
   },
   {
-    title: "Last Name",
-    dataIndex: "lastName",
-    key: "lastName",
+    title: "Username",
+    dataIndex: "username",
+    key: "username",
     render: (text) => <span>{text}</span>,
   },
   {
-    title: "DOB",
-    dataIndex: "dob",
-    key: "dob",
+    title: "Email",
+    dataIndex: "email",
+    key: "email",
     render: (text) => <span>{text}</span>,
   },
   {
-    title: "Gender",
-    dataIndex: "gender",
-    key: "gender",
-    render: (text) => <span>{text}</span>,
+    title: "Company",
+    dataIndex: "company",
+    key: "company",
+    render: (company) => <span>{company?.name}</span>,
   },
   {
-    title: "Location",
-    dataIndex: "location",
-    key: "location",
+    title: "Phone",
+    dataIndex: "phone",
+    key: "phone",
   },
   {
-    title: "Age",
-    dataIndex: "age",
-    key: "age",
+    title: "Website",
+    dataIndex: "website",
+    key: "website",
+    render: (website) => <span>W: {website}</span>,
   },
 ];
-const data: UserType[] = UserRecords;
+// const data: UserType[] = UserRecords;
 
 const UserTable: React.FC = () => {
-  return <Table<UserType> columns={columns} dataSource={data} />;
+  const { data = [], isFetching } = useGetUsersQuery();
+
+  const normalizedData = useMemo(
+    () =>
+      map(data, (value: UserType, index: number) => ({
+        key: `${index}-user`,
+        ...value,
+      })),
+    [JSON.stringify(data)]
+  );
+
+  return (
+    <Table<UserType>
+      loading={isFetching}
+      columns={columns}
+      dataSource={normalizedData}
+    />
+  );
 };
 
 export default UserTable;
