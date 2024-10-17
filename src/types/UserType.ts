@@ -22,8 +22,12 @@ export type UserType = {
  name: string;
  username: string;
  email: string;
+ gender: string;
+ birthDate: string;
  address: Address;
  phone: string;
  website: string;
+ age: number;
+ picture: string;
  company: Company;
 };
