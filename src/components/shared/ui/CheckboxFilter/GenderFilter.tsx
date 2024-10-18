@@ -6,8 +6,7 @@ const CheckboxGroup = Checkbox.Group;
 
 const plainOptions = [
   { label: "Male", value: "male" },
-  { label: "Female", value: "female" },
-  { label: "Other", value: "other" },
+  { label: "Female", value: "female" }
 ];
 
 const GenderFilter: React.FC = () => {

@@ -20,7 +20,7 @@ type Company = {
 
 export type UserType = {
  id: number;
- name: string;
+ firstName: string;
  username: string;
  email: string;
  gender: string;
