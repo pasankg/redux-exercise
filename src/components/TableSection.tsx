@@ -1,10 +1,11 @@
 import { Table } from "antd";
 import type { TableColumnsType } from "antd";
 import { UserType } from "../types";
-// import UserRecords from "../assets/users.json";
 import React, { useMemo } from "react";
-import { useGetUsersQuery } from "../quries";
 import { map } from "lodash";
+import { useSelector } from "react-redux";
+import { useGetUsersQuery } from "../quries";
+
 /* 
 
 interface TableColumnsType<T> {
@@ -67,18 +68,20 @@ const columns: TableColumnsType<UserType> = [
     render: (image) => <img src={image} />,
   },
 ];
-// const data: UserType[] = UserRecords;
 
-const UserTable: React.FC = () => {
-  const { data = [], isFetching } = useGetUsersQuery();
+const UserTable: React.FC = () => {  
+  useGetUsersQuery();
+
+  const filteredUsers = useSelector((state) => state.users.filteredUsers);
+  const isFetching = useSelector((state) => state.users.loading);
 
   const normalizedData = useMemo(
     () =>
-      map(data["users"], (value: UserType, index: number) => ({
+      map(filteredUsers, (value: UserType, index: number) => ({
         key: `${index}-user`,
         ...value,
       })),
-    [JSON.stringify(data["users"])]
+    [JSON.stringify(filteredUsers)]
   );
 
   return (
