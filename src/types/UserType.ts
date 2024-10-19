@@ -4,26 +4,31 @@ type Geo = {
 };
 
 type Address = {
- street: string;
- suite: string;
+ address: string;
+ state: string;
  city: string;
- zipcode: string;
- geo: Geo;
+ country: string;
+ stateCode: string;
+ coordinates: Geo;
 };
 
 type Company = {
  name: string;
- catchPhrase: string;
- bs: string;
+ department: string;
+ title: string;
 };
 
 export type UserType = {
  id: number;
- name: string;
+ firstName: string;
  username: string;
  email: string;
+ gender: string;
+ birthDate: string;
  address: Address;
  phone: string;
  website: string;
+ age: number;
+ picture: string;
  company: Company;
 };

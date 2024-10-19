@@ -1,6 +1,11 @@
 import React from "react";
 import Grid from "@mui/system/Grid";
-import { DateFilter, GenderFilter, AgeRangeFilter } from "./shared";
+import {
+  DateFilter,
+  GenderFilter,
+  AgeRangeFilter,
+  NameMultiSelect,
+} from "./shared";
 
 const FilterSection: React.FC = () => {
   return (
@@ -9,6 +14,10 @@ const FilterSection: React.FC = () => {
         Data table filters.
       </h3>
       <Grid container spacing={3}>
+        <Grid size={4} spacing={1}>
+          <h3>By Name:</h3>
+          <NameMultiSelect />
+        </Grid>
         <Grid size={4} spacing={1}>
           <h3>By Date of birth:</h3>
           <DateFilter />

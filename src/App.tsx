@@ -4,6 +4,7 @@ import Grid from "@mui/system/Grid";
 import { FilterSection, UserTable } from "./components";
 
 function App() {
+  
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Stack
