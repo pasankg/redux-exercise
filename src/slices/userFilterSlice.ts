@@ -37,8 +37,6 @@ const userSlice = createSlice({
         ? state.filteredNames
         : state.nameFilters.map((filter) => filter.value);
 
-      console.log(JSON.stringify(filteredNames));
-
       state.filteredUsers = state.users.filter(
         user =>
           selectedGenders.includes(user.gender) &&
@@ -59,18 +57,36 @@ const userSlice = createSlice({
       state.filteredNames = nameFilters;
       if (size(state.filteredUsers) > 0) {
         state.filteredUsers = state.users.filter(
-          user => nameFilters.includes(user.username) &&
+          user => state.filteredNames.includes(user.username) &&
             (user.age >= state.selectedAgeRange[0] && user.age <= state.selectedAgeRange[1]) &&
             state.selectedGenders.includes(user.gender)
         )
       }
       else {
+        console.log('setUserNameFilters ELSE')
         state.filteredUsers = state.users.filter(
-          user => (user.age >= state.selectedAgeRange[0] && user.age <= state.selectedAgeRange[1]) &&
+          user =>
+            (user.age >= state.selectedAgeRange[0] && user.age <= state.selectedAgeRange[1]) &&
             state.selectedGenders.includes(user.gender)
-        )
+        );
       }
     },
+    setAgeFilters: (state, action: PayloadAction<number[]>) => {
+      const ageRange = action.payload;
+      console.log(state.filteredNames.length);
+      const filteredNames = state.filteredNames.length === 0
+        ? state.users.map((user) => user.username)
+        : state.filteredNames.map((filter) => filter.value);
+
+      const selectedGenders = state.selectedGenders.length ? state.selectedGenders.map((filter) => filter) : [];
+      state.selectedAgeRange = ageRange;
+      state.filteredUsers = state.users.filter(
+        user =>
+          (user.age >= state.selectedAgeRange[0] && user.age <= state.selectedAgeRange[1]) &&
+          filteredNames.includes(user.username) &&
+          selectedGenders.includes(user.gender)
+      )
+    }
   },
   extraReducers: (builder) => {
     builder.addMatcher(userApi.endpoints.getUsers.matchPending, (state) => {
@@ -80,7 +96,7 @@ const userSlice = createSlice({
     builder.addMatcher(userApi.endpoints.getUsers.matchFulfilled, (state, action) => {
       state.loading = false;
       state.users = action.payload?.users;
-      state.filteredUsers = action.payload?.users;
+      state.filteredUsers = state.users.filter(user => user.age >= state.selectedAgeRange[0] && user.age <= state.selectedAgeRange[1])
       state.nameFilters = state.users.map(user => { return { 'label': user.firstName, 'value': user.username } })
       console.log('matchFulfilled');
     });
@@ -93,5 +109,5 @@ const userSlice = createSlice({
 
 })
 
-export const { filterByGender, setUserData, setUserNameFilters } = userSlice.actions;
+export const { filterByGender, setUserData, setUserNameFilters, setAgeFilters } = userSlice.actions;
 export default userSlice.reducer;
