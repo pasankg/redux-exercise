@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { UserType } from "../types";
 import { userApi } from "../quries";
-import { isEmpty, isNull, size } from "lodash"
+import { size } from "lodash"
+import dayjs from "dayjs";
 
 interface UserState {
   users: UserType[];
@@ -9,6 +10,7 @@ interface UserState {
   selectedGenders: string[];
   selectedAgeRange: number[];
   filteredNames: string[];
+  dateOfBirthFilter: string[];
   nameFilters: object[];
   loading: boolean;
   error: string | null;
@@ -18,6 +20,7 @@ const initialState: UserState = {
   users: [],
   filteredUsers: [],
   filteredNames: [],
+  dateOfBirthFilter: ['1900-01-01', dayjs().format('YYYY-M-D')],
   nameFilters: [],
   selectedGenders: ['male', 'female'],
   selectedAgeRange: [20, 65],
@@ -41,17 +44,18 @@ const userSlice = createSlice({
         user =>
           selectedGenders.includes(user.gender) &&
           (user.age >= state.selectedAgeRange[0] && user.age <= state.selectedAgeRange[1]) &&
-          filteredNames.includes(user.username)
+          filteredNames.includes(user.username) &&
+          (user.birthDate >= state.dateOfBirthFilter[0] && user.birthDate <= state.dateOfBirthFilter[1])
       );
 
     },
-    setUserData: (state, action: PayloadAction<UserType[]>) => {
-      const activeUserData = action.payload ?? [];
-      state.users = activeUserData;
-      state.filteredUsers = state.users.filter(user => state.selectedGenders.includes(user.gender) &&
-        (user.age >= state.selectedAgeRange[0] && user.age <= state.selectedAgeRange[1]));
-      state.nameFilters = state.users.map(user => { return { 'label': user.firstName, 'value': user.firstName } })
-    },
+    // setUserData: (state, action: PayloadAction<UserType[]>) => {
+    //   const activeUserData = action.payload ?? [];
+    //   state.users = activeUserData;
+    //   state.filteredUsers = state.users.filter(user => state.selectedGenders.includes(user.gender) &&
+    //     (user.age >= state.selectedAgeRange[0] && user.age <= state.selectedAgeRange[1]));
+    //   state.nameFilters = state.users.map(user => { return { 'label': user.firstName, 'value': user.firstName } })
+    // },
     setUserNameFilters: (state, action: PayloadAction<string[]>) => {
       const nameFilters = action.payload;
       state.filteredNames = nameFilters;
@@ -59,21 +63,21 @@ const userSlice = createSlice({
         state.filteredUsers = state.users.filter(
           user => state.filteredNames.includes(user.username) &&
             (user.age >= state.selectedAgeRange[0] && user.age <= state.selectedAgeRange[1]) &&
-            state.selectedGenders.includes(user.gender)
+            state.selectedGenders.includes(user.gender) &&
+            (user.birthDate >= state.dateOfBirthFilter[0] && user.birthDate <= state.dateOfBirthFilter[1])
         )
       }
       else {
-        console.log('setUserNameFilters ELSE')
         state.filteredUsers = state.users.filter(
           user =>
             (user.age >= state.selectedAgeRange[0] && user.age <= state.selectedAgeRange[1]) &&
-            state.selectedGenders.includes(user.gender)
+            state.selectedGenders.includes(user.gender) &&
+            (user.birthDate >= state.dateOfBirthFilter[0] && user.birthDate <= state.dateOfBirthFilter[1])
         );
       }
     },
     setAgeFilters: (state, action: PayloadAction<number[]>) => {
       const ageRange = action.payload;
-      console.log(state.filteredNames.length);
       const filteredNames = state.filteredNames.length === 0
         ? state.users.map((user) => user.username)
         : state.filteredNames.map((filter) => filter.value);
@@ -84,7 +88,26 @@ const userSlice = createSlice({
         user =>
           (user.age >= state.selectedAgeRange[0] && user.age <= state.selectedAgeRange[1]) &&
           filteredNames.includes(user.username) &&
-          selectedGenders.includes(user.gender)
+          selectedGenders.includes(user.gender) &&
+          (user.birthDate >= state.dateOfBirthFilter[0] && user.birthDate <= state.dateOfBirthFilter[1])
+      )
+    },
+    setDateOfBirthFilter: (state, action: PayloadAction<string[]>) => {
+      const dateRange = action.payload;
+      state.dateOfBirthFilter = dateRange;
+
+      const filteredNames = state.filteredNames.length === 0
+        ? state.users.map((user) => user.username)
+        : state.filteredNames.map((filter) => filter.value);
+
+      const selectedGenders = state.selectedGenders.length ? state.selectedGenders.map((filter) => filter) : [];
+
+      state.filteredUsers = state.users.filter(
+        user =>
+          (user.birthDate >= state.dateOfBirthFilter[0] && user.birthDate <= state.dateOfBirthFilter[1]) &&
+          filteredNames.includes(user.username) &&
+          selectedGenders.includes(user.gender) &&
+          (user.age >= state.selectedAgeRange[0] && user.age <= state.selectedAgeRange[1])
       )
     }
   },
@@ -109,5 +132,5 @@ const userSlice = createSlice({
 
 })
 
-export const { filterByGender, setUserData, setUserNameFilters, setAgeFilters } = userSlice.actions;
+export const { filterByGender, setUserData, setUserNameFilters, setAgeFilters, setDateOfBirthFilter } = userSlice.actions;
 export default userSlice.reducer;
