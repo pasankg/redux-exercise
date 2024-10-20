@@ -1,26 +1,20 @@
 import React from "react";
 import { Select } from "antd";
-// import type { SelectProps } from "antd";
-import { useSelector, useDispatch } from "react-redux";
-import { setUserNameFilters } from "../../../../slices";
 import { isEmpty, isNull, split } from "lodash";
 
 // const options: SelectProps["options"] = [];
 
-const MultiSelect: React.FC = () => {
- const dispatch = useDispatch();
+interface MultiSelectProps {
+  options: Record<string, unknown>[]
+  onChange: (type: string, value: string) => void
+}
+
+const MultiSelect: React.FC<MultiSelectProps> = ({ onChange, options }) => {
+
 
  const handleChange = (value: string) => {
-  if(!isEmpty(value)) {
-   const selectedValues = split(value, ',')
-   dispatch(setUserNameFilters(selectedValues))
-  }
-  else {
-   dispatch(setUserNameFilters([]))
-  }
+  onChange('multiSelect', value)
 };
-
-  const options = useSelector((state) => state.users.nameFilters);
 
   return (
     <Select

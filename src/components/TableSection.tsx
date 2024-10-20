@@ -2,7 +2,7 @@ import { Table } from "antd";
 import type { TableColumnsType } from "antd";
 import { UserType } from "../types";
 import React, { useMemo } from "react";
-import { map } from "lodash";
+import { size, chain, includes } from "lodash";
 import { useSelector } from "react-redux";
 import { useGetUsersQuery } from "../quries";
 
@@ -69,26 +69,45 @@ const columns: TableColumnsType<UserType> = [
   },
 ];
 
-const UserTable: React.FC = () => {  
-  useGetUsersQuery();
+const UserTable: React.FC = () => {
+  const { data, isFetching } = useGetUsersQuery();
 
-  const filteredUsers = useSelector((state) => state.users.filteredUsers);
-  const isFetching = useSelector((state) => state.users.loading);
 
-  const normalizedData = useMemo(
-    () =>
-      map(filteredUsers, (value: UserType, index: number) => ({
+  /**
+   * 
+   *  slices: 
+   *    filters {
+   *      username: filterByName
+   *      age: By Age Range  
+   *      dateOfBirthFilter: DOB
+   *      gender
+   * }
+   * 
+   */
+
+
+
+
+  const selectedUsers = useSelector((state) => state.users.usernames); //retrieve data from slice
+  const selectedAge = useSelector((state) => state.users.selectedAgeRange)
+
+  console.log(`selectedAge`, selectedAge)
+
+  const filteredUsers = useMemo(() => {
+    return chain(data?.users)
+      .filter((user) => (size(selectedUsers) > 0 ? includes(selectedUsers, user.username) : true))
+      .map((value, index) => ({
         key: `${index}-user`,
         ...value,
-      })),
-    [JSON.stringify(filteredUsers)]
-  );
+      }))
+      .value();
+  }, [JSON.stringify(data?.users), selectedUsers, selectedAge]);
 
   return (
     <Table<UserType>
       loading={isFetching}
       columns={columns}
-      dataSource={normalizedData}
+      dataSource={filteredUsers}
     />
   );
 };
