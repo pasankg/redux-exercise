@@ -1,27 +1,28 @@
 import { DatePicker, Space } from "antd";
 import React from "react";
-import type { Dayjs } from "dayjs";
-import { useDispatch } from "react-redux";
-import { setDateOfBirthFilter } from "../../../../slices";
+import  { dayjs } from "../../../../vendor";
+import { Dayjs } from 'dayjs' // Import the Dayjs type
 
 const { RangePicker } = DatePicker;
-const dateFormat = "YYYY-M-D";
 
-const DateFilter: React.FC = () => {
-  const dispatch = useDispatch();
+interface OptionProps {
+  options: string;
+  onChange: (type: string, value: string[]) => void;
+}
 
+const DateFilter: React.FC<OptionProps> = ({ options, onChange }) => {
   const onRangeChange = (
     dates: null | (Dayjs | null)[],
     dateStrings: string[]
   ) => {
     if (dates) {
-      dispatch(setDateOfBirthFilter(dateStrings));
+      onChange("dateRangeSelect", dateStrings);
     }
   };
 
   return (
     <Space direction="vertical" size={12}>
-      <RangePicker onChange={onRangeChange} format={dateFormat} />
+      <RangePicker onChange={onRangeChange} format={options} />
     </Space>
   );
 };

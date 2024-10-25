@@ -1,1 +1,1 @@
-export {default as NameMultiSelect} from './MultiSelectFilter'
+export {default as MultiSelectFilter} from './MultiSelectFilter'

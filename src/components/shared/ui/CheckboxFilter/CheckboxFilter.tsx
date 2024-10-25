@@ -15,13 +15,11 @@ interface OptionProps {
 }
 
 const CheckboxFilter: React.FC<OptionProps> = ({ options, onChange }) => {
-  const selectedValue = useSelector((state) => state.users.selectedGenders);
-  console.log(`options`, options);
+  const selectedValue = useSelector((state) => state.users.selectedGenders); 
   if (isEmpty(options)) return null;
   
   const handleChange = (checkedList: string[]) => {
-    onChange("ageSelect", checkedList as string[]);
-    console.log(checkedList);
+    onChange("radioSelect", checkedList as string[]);    
   };
 
   return (
