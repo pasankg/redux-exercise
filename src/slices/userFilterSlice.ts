@@ -13,8 +13,8 @@ interface UserState {
   usernames: string[];
   selectedDateOfBirthFilter: string[];
   nameFilters: object[];
-  loading: boolean;
-  error: string | null;
+  // loading: boolean;
+  // error: string | null;
 }
 
 const initialState: UserState = {
@@ -25,8 +25,8 @@ const initialState: UserState = {
   nameFilters: [],
   selectedGenders: ['male', 'female'],
   selectedAgeRange: [20, 65],
-  loading: false,
-  error: null,
+  // loading: false,
+  // error: null,
 }
 
 const userSlice = createSlice({
@@ -49,9 +49,7 @@ const userSlice = createSlice({
       const dateRange = action.payload;
       state.selectedDateOfBirthFilter = dateRange;
     },
-    setResetFilters: (state, action: PayloadAction<string>) => {
-      console.log(action.payload);
-    }
+    reset: () => initialState, // Reset action that returns the initial state
   },
   extraReducers: (builder) => {
     builder.addMatcher(userApi.endpoints.getUsers.matchFulfilled, (state, action) => {
@@ -63,5 +61,5 @@ const userSlice = createSlice({
 
 })
 
-export const { setGenderFilter, setFilterUsername, setAgeRangeFilters, setFilterDateOfBirth, setResetFilters } = userSlice.actions;
+export const { setGenderFilter, setFilterUsername, setAgeRangeFilters, setFilterDateOfBirth, reset } = userSlice.actions;
 export default userSlice.reducer;

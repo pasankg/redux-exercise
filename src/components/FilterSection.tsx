@@ -13,7 +13,7 @@ import {
   setGenderFilter,
   setFilterDateOfBirth,
   setAgeRangeFilters,
-  setResetFilters,
+  reset,
 } from "../slices";
 
 const FilterSection: React.FC = () => {
@@ -42,6 +42,7 @@ const FilterSection: React.FC = () => {
     text: "Reset",
     variant: "outlined",
     colour: "danger",
+    icon: "ClearOutlined",
   };
 
   const handleOnChange = (type: string, value: unknown) => {
@@ -58,8 +59,8 @@ const FilterSection: React.FC = () => {
       case "rangeSelect":
         dispatch(setAgeRangeFilters(value as number[]));
         break;
-      case "buttonSelect":
-        dispatch(setResetFilters(value as string));
+      case "buttonClick":
+        dispatch(reset());
         break;
     }
   };
@@ -90,7 +91,7 @@ const FilterSection: React.FC = () => {
           <GenderFilter options={genderOptions} onChange={handleOnChange} />
         </Grid>
         <Grid size={3} spacing={1}>
-          <Button options={buttonOptions} onChange={handleOnChange} />
+          <Button options={buttonOptions} onClick={handleOnChange} />
         </Grid>
       </Grid>
     </>
