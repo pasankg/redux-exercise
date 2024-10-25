@@ -1,1 +1,1 @@
-export { default as GenderFilter } from './GenderFilter'
+export { default as GenderFilter } from './CheckboxFilter'

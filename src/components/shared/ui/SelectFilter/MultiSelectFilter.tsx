@@ -13,6 +13,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({ onChange, options }) => {
 
 
  const handleChange = (value: string) => {
+  console.log(`multiSelect`);
   onChange('multiSelect', value)
 };
 

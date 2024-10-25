@@ -6,7 +6,9 @@ export const userApi = createApi({
  baseQuery: fetchBaseQuery({ baseUrl: 'https://dummyjson.com/' }),
  endpoints: (builder) => ({
   getUsers: builder.query<UserType[], void>({
-   query: () => `users`
+   query: () => `users`,
+   // Use `transformResponse` to extract the `users` array from the API response
+   transformResponse: (response: { users: UserType[], total: number, skip: number, limit: number }) => response.users
   }),
  }),
 })

@@ -1,24 +1,27 @@
 import React from "react";
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import Grid from "@mui/system/Grid";
-import {
-  DateFilter,
-  GenderFilter,
-  AgeRangeFilter,
-  NameMultiSelect,
+import {  
+  GenderFilter, 
 } from "./shared";
-import { setFilterUsername } from '../slices'
+import { setGenderFilter } from '../slices'
 
 const FilterSection: React.FC = () => {
-  const dispatch = useDispatch()
-  const selectedUsers = useSelector((state) => state.users.nameFilters);
+  const dispatch = useDispatch();
+
+  const genderOptions = [
+    { label: "Male", value: "male" },
+    { label: "Female", value: "female" }
+  ];
+
   const handleOnChange = (type: string, value: unknown) => {
-    console.log(`---filteredValue`, value)
-    switch(type) {
-      case 'multiSelect': 
-        dispatch(setFilterUsername(value as string[]))
+    switch(type){
+      case 'ageSelect':
+        dispatch(setGenderFilter(value as string[]))
     }
-  };
+    console.log(`type`, type);
+    console.log(`value`, value);
+  }
 
   return (
     <>
@@ -26,10 +29,10 @@ const FilterSection: React.FC = () => {
         Data table filters.
       </h3>
       <Grid container spacing={3}>
-        <Grid size={4} spacing={1}>
+        {/* <Grid size={4} spacing={1}>
           <h3>By Name:</h3>
           <NameMultiSelect
-            options={selectedUsers}
+            options={genderOptions}
             onChange={handleOnChange}
           />
         </Grid>
@@ -40,10 +43,10 @@ const FilterSection: React.FC = () => {
         <Grid size={4} spacing={1}>
           <h3>By age range:</h3>
           <AgeRangeFilter />
-        </Grid>
+        </Grid> */}
         <Grid size={4} spacing={1}>
           <h3>By gender:</h3>
-          <GenderFilter />
+          <GenderFilter options={genderOptions} onChange={handleOnChange} />
         </Grid>
       </Grid>
     </>

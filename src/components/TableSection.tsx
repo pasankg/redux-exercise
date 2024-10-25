@@ -6,16 +6,6 @@ import { size, chain, includes } from "lodash";
 import { useSelector } from "react-redux";
 import { useGetUsersQuery } from "../quries";
 
-/* 
-
-interface TableColumnsType<T> {
-  title: string,
-  dataIndex: T[key]
-  
-}
-
-*/
-
 const columns: TableColumnsType<UserType> = [
   {
     title: "First Name",
@@ -72,36 +62,44 @@ const columns: TableColumnsType<UserType> = [
 const UserTable: React.FC = () => {
   const { data, isFetching } = useGetUsersQuery();
 
-
   /**
-   * 
-   *  slices: 
+   *
+   *  slices:
    *    filters {
-   *      username: filterByName
-   *      age: By Age Range  
-   *      dateOfBirthFilter: DOB
-   *      gender
+   *      gender: By gender:
    * }
-   * 
+   *
    */
 
-
-
-
   const selectedUsers = useSelector((state) => state.users.usernames); //retrieve data from slice
-  const selectedAge = useSelector((state) => state.users.selectedAgeRange)
+  const selectedAgeRange = useSelector((state) => state.users.selectedAgeRange);
+  const selectedGender = useSelector((state) => state.users.selectedGenders);
 
-  console.log(`selectedAge`, selectedAge)
+  console.log(`selectedUsers`, selectedUsers);
+  console.log(`selectedAgeRange`, selectedAgeRange);
+  console.log(`selectedGender`, selectedGender);
 
   const filteredUsers = useMemo(() => {
-    return chain(data?.users)
-      .filter((user) => (size(selectedUsers) > 0 ? includes(selectedUsers, user.username) : true))
+    return chain(data)
+      .filter(
+        (user) =>
+          (size(selectedUsers) > 0
+            ? includes(selectedUsers, user.username)
+            : true) &&
+          (size(selectedGender) > 0
+            ? includes(selectedGender, user.gender)
+            : true) &&
+          (size(selectedAgeRange) > 0
+            ? (Number(selectedAgeRange[0]), user.age >= selectedAgeRange[0]) &&
+              (Number(selectedAgeRange[1]), user.age <= selectedAgeRange[1])
+            : true)
+      )
       .map((value, index) => ({
         key: `${index}-user`,
         ...value,
       }))
       .value();
-  }, [JSON.stringify(data?.users), selectedUsers, selectedAge]);
+  }, [data, selectedUsers, selectedAgeRange, selectedGender]);
 
   return (
     <Table<UserType>

@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { UserType } from "../types";
 import { userApi } from "../quries";
-import { size, map } from "lodash"
+import { map } from "lodash"
 import dayjs from "dayjs";
 
 interface UserState {
@@ -32,21 +32,21 @@ const userSlice = createSlice({
   name: "userFilters",
   initialState,
   reducers: {
-    filterByGender: (state, action: PayloadAction<string[]>) => {
+    setGenderFilter: (state, action: PayloadAction<string[]>) => {
       const selectedGenders = action.payload;
       state.selectedGenders = selectedGenders;
 
-      const filteredNames = state.filteredNames.length
-        ? state.filteredNames
-        : state.nameFilters.map((filter) => filter.value);
+      // const filteredNames = state.filteredNames.length
+      //   ? state.filteredNames
+      //   : state.nameFilters.map((filter) => filter.value);
 
-      state.filteredUsers = state.users.filter(
-        user =>
-          selectedGenders.includes(user.gender) &&
-          (user.age >= state.selectedAgeRange[0] && user.age <= state.selectedAgeRange[1]) &&
-          filteredNames.includes(user.username) &&
-          (user.birthDate >= state.dateOfBirthFilter[0] && user.birthDate <= state.dateOfBirthFilter[1])
-      );
+      // state.filteredUsers = state.users.filter(
+      //   user =>
+      //     selectedGenders.includes(user.gender) &&
+      //     (user.age >= state.selectedAgeRange[0] && user.age <= state.selectedAgeRange[1]) &&
+      //     filteredNames.includes(user.username) &&
+      //     (user.birthDate >= state.dateOfBirthFilter[0] && user.birthDate <= state.dateOfBirthFilter[1])
+      // );
 
     },
     // setUserData: (state, action: PayloadAction<UserType[]>) => {
@@ -97,29 +97,29 @@ const userSlice = createSlice({
       const dateRange = action.payload;
       state.dateOfBirthFilter = dateRange;
 
-      const filteredNames = state.filteredNames.length === 0
-        ? state.users.map((user) => user.username)
-        : state.filteredNames.map((filter) => filter.value);
+      // const filteredNames = state.filteredNames.length === 0
+      //   ? state.users.map((user) => user.username)
+      //   : state.filteredNames.map((filter) => filter.value);
 
-      const selectedGenders = state.selectedGenders.length ? state.selectedGenders.map((filter) => filter) : [];
+      // const selectedGenders = state.selectedGenders.length ? state.selectedGenders.map((filter) => filter) : [];
 
-      state.filteredUsers = state.users.filter(
-        user =>
-          (user.birthDate >= state.dateOfBirthFilter[0] && user.birthDate <= state.dateOfBirthFilter[1]) &&
-          filteredNames.includes(user.username) &&
-          selectedGenders.includes(user.gender) &&
-          (user.age >= state.selectedAgeRange[0] && user.age <= state.selectedAgeRange[1])
-      )
+      // state.filteredUsers = state.users.filter(
+      //   user =>
+      //     (user.birthDate >= state.dateOfBirthFilter[0] && user.birthDate <= state.dateOfBirthFilter[1]) &&
+      //     filteredNames.includes(user.username) &&
+      //     selectedGenders.includes(user.gender) &&
+      //     (user.age >= state.selectedAgeRange[0] && user.age <= state.selectedAgeRange[1])
+      // )
     }
   },
   extraReducers: (builder) => {
     builder.addMatcher(userApi.endpoints.getUsers.matchFulfilled, (state, action) => {
-      const users = action.payload?.users
+      const users = action.payload?.users      
       state.nameFilters = map(users, user => ({ label: user.firstName, value: user.username}))
     });
   }
 
 })
 
-export const { filterByGender, setUserData, setFilterUsername, setAgeFilters, setDateOfBirthFilter } = userSlice.actions;
+export const { setGenderFilter, setFilterUsername, setAgeFilters, setDateOfBirthFilter } = userSlice.actions;
 export default userSlice.reducer;
