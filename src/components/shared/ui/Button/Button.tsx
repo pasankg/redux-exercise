@@ -26,7 +26,7 @@ const ButtonElement: React.FC<OptionProps> = ({ options, onClick }) => {
       name={options?.text}
       color={options?.colour || "default"}
       variant={options?.variant}
-      icon={DynamicIcon ? <DynamicIcon /> : undefined}
+      icon={DynamicIcon && <DynamicIcon />}
       onClick={handleClick}
     >
       {options?.text}

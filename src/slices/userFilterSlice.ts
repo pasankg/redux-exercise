@@ -1,32 +1,24 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-// import { UserType } from "../types";
+import { dateFormat, selectedGenders, selectedAgeRange } from '../constants'
 import { userApi } from "../quries";
 import { map } from "lodash"
 import { dayjs } from "../vendor";
 
-const dateFormat = "YYYY-M-D";
+
 interface UserState {
-  // users: UserType[];
-  // filteredUsers: UserType[];
   selectedGenders: string[];
   selectedAgeRange: number[];
   usernames: string[];
   selectedDateOfBirthFilter: string[];
   nameFilters: object[];
-  // loading: boolean;
-  // error: string | null;
 }
 
 const initialState: UserState = {
-  // users: [],
-  // filteredUsers: [],
   usernames: [],
   selectedDateOfBirthFilter: [dayjs().year(1970).format(dateFormat), dayjs().format(dateFormat)],
   nameFilters: [],
-  selectedGenders: ['male', 'female'],
-  selectedAgeRange: [20, 65],
-  // loading: false,
-  // error: null,
+  selectedGenders: selectedGenders,
+  selectedAgeRange: selectedAgeRange,
 }
 
 const userSlice = createSlice({

@@ -16,34 +16,17 @@ import {
   reset,
 } from "../slices";
 
+import {
+  genderOptions,
+  dateFormat,
+  ageRangeOptions,
+  buttonOptions,
+} from "../constants";
+
 const FilterSection: React.FC = () => {
   const dispatch = useDispatch();
 
-  const genderOptions = [
-    { label: "Male", value: "male" },
-    { label: "Female", value: "female" },
-  ];
-
   const nameFilterOptions = useSelector((state) => state.users.nameFilters);
-
-  const dateFormat = "YYYY-M-D";
-
-  const markers = {
-    18: "18",
-    25: "25",
-    35: "35",
-    45: "45",
-    55: "55",
-    65: "65",
-  };
-  const ageRangeOptions = { markers: markers, min: 18, max: 65 };
-
-  const buttonOptions = {
-    text: "Reset",
-    variant: "outlined",
-    colour: "danger",
-    icon: "ClearOutlined",
-  };
 
   const handleOnChange = (type: string, value: unknown) => {
     switch (type) {

@@ -1,7 +1,6 @@
 import { DatePicker, Space } from "antd";
 import React from "react";
-import  { dayjs } from "../../../../vendor";
-import { Dayjs } from 'dayjs' // Import the Dayjs type
+import { Dayjs } from "dayjs"; // Import the Dayjs type
 
 const { RangePicker } = DatePicker;
 
@@ -15,9 +14,7 @@ const DateFilter: React.FC<OptionProps> = ({ options, onChange }) => {
     dates: null | (Dayjs | null)[],
     dateStrings: string[]
   ) => {
-    if (dates) {
-      onChange("dateRangeSelect", dateStrings);
-    }
+    onChange("dateRangeSelect", dateStrings);
   };
 
   return (

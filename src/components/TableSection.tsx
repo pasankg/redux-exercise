@@ -2,10 +2,11 @@ import { Table } from "antd";
 import type { TableColumnsType } from "antd";
 import { UserType } from "../types";
 import React, { useMemo } from "react";
-import { size, chain, includes } from "lodash";
+import { size, chain, includes, inRange } from "lodash";
 import { useSelector } from "react-redux";
 import { useGetUsersQuery } from "../quries";
 import { dayjs } from "../vendor";
+import { dateFormat as options } from "../constants/index";
 
 const columns: TableColumnsType<UserType> = [
   {
@@ -63,7 +64,6 @@ const columns: TableColumnsType<UserType> = [
 const UserTable: React.FC = () => {
   const { data, isFetching } = useGetUsersQuery();
 
-  const options = "YYYY-M-D";
   const selectedUsers = useSelector((state) => state.users.usernames); //retrieve data from slice
   const selectedAgeRange = useSelector((state) => state.users.selectedAgeRange);
   const selectedGender = useSelector((state) => state.users.selectedGenders);
@@ -81,8 +81,11 @@ const UserTable: React.FC = () => {
           ? includes(selectedGender, user.gender)
           : false) &&
         (size(selectedAgeRange) > 0
-          ? (Number(selectedAgeRange[0]), user.age >= selectedAgeRange[0]) &&
-            (Number(selectedAgeRange[1]), user.age <= selectedAgeRange[1])
+          ? inRange(
+              user.age,
+              Number(selectedAgeRange[0]),
+              Number(selectedAgeRange[1] + 1)
+            )
           : false) &&
         size(selectedDobDates) > 0
           ? dayjs(user.birthDate, options).isBetween(
