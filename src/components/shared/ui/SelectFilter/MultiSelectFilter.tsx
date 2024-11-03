@@ -1,13 +1,14 @@
 import React from "react";
 import { Select } from "antd";
 interface MultiSelectProps {
-  options: Record<string, unknown>[];
+  id: string,
+  values: unknown;
   onChange: (type: string, value: string[]) => void;
 }
 
-const MultiSelect: React.FC<MultiSelectProps> = ({ onChange, options }) => {
+const MultiSelect: React.FC<MultiSelectProps> = ({ id, onChange, values }) => {
   const handleChange = (value: string[]) => {
-    onChange("multiSelect", value);
+    onChange(id, value);
   };
 
   return (
@@ -16,7 +17,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({ onChange, options }) => {
       style={{ width: "100%" }}
       onChange={handleChange}
       tokenSeparators={[","]}
-      options={options}
+      options={values}
     />
   );
 };

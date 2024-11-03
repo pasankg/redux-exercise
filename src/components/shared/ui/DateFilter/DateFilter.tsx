@@ -5,16 +5,17 @@ import { Dayjs } from "dayjs"; // Import the Dayjs type
 const { RangePicker } = DatePicker;
 
 interface OptionProps {
-  options: string;
+  id: string,
+  options: unknown;
   onChange: (type: string, value: string[]) => void;
 }
 
-const DateFilter: React.FC<OptionProps> = ({ options, onChange }) => {
+const DateFilter: React.FC<OptionProps> = ({ id, options, onChange }) => {
   const onRangeChange = (
     dates: null | (Dayjs | null)[],
     dateStrings: string[]
   ) => {
-    onChange("dateRangeSelect", dateStrings);
+    onChange(id, dateStrings);
   };
 
   return (

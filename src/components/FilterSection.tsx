@@ -1,52 +1,100 @@
 import React from "react";
+import { map } from "lodash";
 import { useDispatch, useSelector } from "react-redux";
 import Grid from "@mui/system/Grid";
 import {
-  CheckboxFilter as GenderFilter,
-  MultiSelectFilter as NameMultiSelect,
-  DateFilter as DateOfBirthFilter,
-  RangeFilter as AgeRangeFilter,
+  CheckboxFilter,
+  MultiSelectFilter,
+  DateFilter,
+  RangeFilter,
   Button,
+  SliderProps,
+  OptionItemProps
 } from "./shared";
 import {
-  setFilterUsername,
-  setGenderFilter,
-  setFilterDateOfBirth,
-  setAgeRangeFilters,
-  reset,
+  setFilters
 } from "../slices";
 
 import {
   genderOptions,
   dateFormat,
   ageRangeOptions,
+
   buttonOptions,
 } from "../constants";
+
+type FilterType = "multiSelect" | "datePicker" | "rangePicker" | "checkbox";
+interface FilterConfig {
+  id: string;
+  type: FilterType;
+  label: string;
+  onChange: (type: string, value: unknown) => void;
+  values?: Record<string, unknown>[] | OptionItemProps | unknown;
+  options?: unknown | SliderProps;
+}
+
+const FilterWrapper = ({ type, id, onChange, values, options } : FilterConfig) => {
+  switch (type) {
+    case "multiSelect": {
+      return (
+        <MultiSelectFilter id={id} onChange={onChange} values={values} />
+      );
+    }
+    case "datePicker": {
+      return <DateFilter id={id} options={options} onChange={onChange} />;
+    }
+    case "rangePicker": {
+      return <RangeFilter id={id} onChange={onChange} values={values} />;
+    }
+    case "checkbox": {
+      return <CheckboxFilter id={id} onChange={onChange} values={values} />;
+    }
+    default: {
+      return <></>;
+    }
+  }
+};
 
 const FilterSection: React.FC = () => {
   const dispatch = useDispatch();
 
-  const nameFilterOptions = useSelector((state) => state.users.nameFilters);
+  const filterValues = useSelector((state) => state.users.filters);
+  const nameFilterOptions = useSelector((state) => state.users.nameFilters)
 
-  const handleOnChange = (type: string, value: unknown) => {
-    switch (type) {
-      case "radioSelect":
-        dispatch(setGenderFilter(value as string[]));
-        break;
-      case "multiSelect":
-        dispatch(setFilterUsername(value as string[]));
-        break;
-      case "dateRangeSelect":
-        dispatch(setFilterDateOfBirth(value as string[]));
-        break;
-      case "rangeSelect":
-        dispatch(setAgeRangeFilters(value as number[]));
-        break;
-      case "buttonClick":
-        dispatch(reset());
-        break;
-    }
+  const handleOnChange = (type: string, value: unknown) => { //type: name, dateOfBirth, ageRange, gender
+    dispatch(setFilters({...filterValues, [type]: value}))
   };
+
+  const filterConfig: FilterConfig[] = [
+    {
+      id: "name",
+      type: "multiSelect",
+      label: "Select by Name:",
+      onChange: handleOnChange,
+      values: nameFilterOptions,
+    },
+    {
+      id: "dateOfBirth",
+      type: "datePicker",
+      label: "By Date of birth:",
+      onChange: handleOnChange,
+      options: dateFormat,
+    },
+    {
+      id: "ageRange",
+      type: "rangePicker",
+      label: "By age range:",
+      onChange: handleOnChange,
+      values: ageRangeOptions,
+    },
+    {
+      id: "gender",
+      type: "checkbox",
+      label: "By gender:",
+      onChange: handleOnChange,
+      values: genderOptions,
+    },
+  ];
 
   return (
     <>
@@ -54,28 +102,12 @@ const FilterSection: React.FC = () => {
         Data table filters.
       </h3>
       <Grid container spacing={3}>
-        <Grid size={3} spacing={1}>
-          <h3>By Name:</h3>
-          <NameMultiSelect
-            options={nameFilterOptions}
-            onChange={handleOnChange}
-          />
-        </Grid>
-        <Grid size={3} spacing={1}>
-          <h3>By Date of birth:</h3>
-          <DateOfBirthFilter options={dateFormat} onChange={handleOnChange} />
-        </Grid>
-        <Grid size={2} spacing={1}>
-          <h3>By age range:</h3>
-          <AgeRangeFilter options={ageRangeOptions} onChange={handleOnChange} />
-        </Grid>
-        <Grid size={3} spacing={1}>
-          <h3>By gender:</h3>
-          <GenderFilter options={genderOptions} onChange={handleOnChange} />
-        </Grid>
-        <Grid size={3} spacing={1}>
-          <Button options={buttonOptions} onClick={handleOnChange} />
-        </Grid>
+        {map(filterConfig, (config, index) => (
+          <Grid key={`${config.id}-${index}`} size={3} spacing={1}>
+            <p>{config.label}</p>
+            <FilterWrapper {...config} />
+          </Grid>
+        ))}
       </Grid>
     </>
   );
