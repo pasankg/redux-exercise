@@ -1,1 +1,1 @@
-export { default as AgeRangeFilter } from './AgeRangeFilter'
+export { default as RangeFilter } from './RangeFilter'
