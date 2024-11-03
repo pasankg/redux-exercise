@@ -11,6 +11,7 @@ interface UserState {
   usernames: string[];
   selectedDateOfBirthFilter: string[];
   nameFilters: object[];
+  filters: unknown;
 }
 
 const initialState: UserState = {
@@ -19,12 +20,20 @@ const initialState: UserState = {
   nameFilters: [],
   selectedGenders: selectedGenders,
   selectedAgeRange: selectedAgeRange,
+  filters: {
+    dateOfBirth: [dayjs().year(1970).format(dateFormat), dayjs().format(dateFormat)],
+    ageRange: selectedAgeRange,
+    gender: selectedGenders
+  }
 }
 
 const userSlice = createSlice({
   name: "userFilters",
   initialState,
   reducers: {
+    setFilters: (state, action: PayloadAction<unknown>) => {
+      state.filters = action.payload
+    },
     setGenderFilter: (state, action: PayloadAction<string[]>) => {
       const selectedGenders = action.payload;
       state.selectedGenders = selectedGenders;
@@ -46,6 +55,10 @@ const userSlice = createSlice({
   extraReducers: (builder) => {
     builder.addMatcher(userApi.endpoints.getUsers.matchFulfilled, (state, action) => {
       const users = action.payload
+      state.filters = {
+        ...state.filters,
+        name: map(users, user => (user.username))
+      }
       state.nameFilters = map(users, user => ({ label: user.firstName, value: user.username }))
       state.usernames = map(users, user => (user.username))
     });
@@ -53,5 +66,5 @@ const userSlice = createSlice({
 
 })
 
-export const { setGenderFilter, setFilterUsername, setAgeRangeFilters, setFilterDateOfBirth, reset } = userSlice.actions;
+export const { setGenderFilter, setFilterUsername, setAgeRangeFilters, setFilterDateOfBirth, setFilters, reset } = userSlice.actions;
 export default userSlice.reducer;

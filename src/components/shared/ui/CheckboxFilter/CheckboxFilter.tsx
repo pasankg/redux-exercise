@@ -1,31 +1,32 @@
 import { Checkbox } from "antd";
-import { isEmpty } from "lodash";
+import { isEmpty, get } from "lodash";
 import { useSelector } from "react-redux";
 
 const CheckboxGroup = Checkbox.Group;
 
-interface OptionItemProps {
+export interface OptionItemProps {
   label: string;
   value: string;
 }
 
 interface OptionProps {
-  options: OptionItemProps[];
+  id: string,
+  values: OptionItemProps[];
   onChange: (type: string, value: string[]) => void;
 }
 
-const CheckboxFilter: React.FC<OptionProps> = ({ options, onChange }) => {
-  const selectedValue = useSelector((state) => state.users.selectedGenders); 
-  if (isEmpty(options)) return null;
+const CheckboxFilter: React.FC<OptionProps> = ({ id, values, onChange }) => {
+  const selectedValue = useSelector((state) => get(state.users.filters, id)); 
+  if (isEmpty(values)) return null;
   
   const handleChange = (checkedList: string[]) => {
-    onChange("radioSelect", checkedList as string[]);    
+    onChange(id, checkedList as string[]);    
   };
 
   return (
     <>
       <CheckboxGroup
-        options={options}
+        options={values}
         value={selectedValue}
         onChange={handleChange}
       />

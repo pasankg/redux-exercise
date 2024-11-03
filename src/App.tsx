@@ -8,6 +8,7 @@ function App() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Stack
+        pt={2}
         spacing={2}
         direction="column"
         sx={{
@@ -15,11 +16,10 @@ function App() {
           alignItems: "center",
         }}
       >
-        <Grid container spacing={2} size="auto">
+        <Grid container spacing={3} size="auto" width={'100%'} px={10}>
           <Grid size={12}>
             <FilterSection />
           </Grid>
-          <hr />
           <Grid size={12}>
             <UserTable />
           </Grid>

@@ -1,23 +1,24 @@
 import { Slider } from "antd";
 import type { SliderSingleProps } from "antd";
 
-interface SliderProps {
+export interface SliderProps {
   min: number;
   max: number;
   markers: SliderSingleProps;
 }
 
 interface OptionProps {
-  options: SliderProps;
+  id: string,
+  values: SliderProps;
   onChange: (type: string, value: number[]) => void;
 }
 
-const RangeFilter: React.FC<OptionProps> = ({ options, onChange }) => {
+const RangeFilter: React.FC<OptionProps> = ({ id, values, onChange }) => {
   const onChangeComplete = (value: number[]) => {
-    onChange("rangeSelect", value);
+    onChange(id, value);
   };
 
-  const markers: SliderSingleProps["marks"] = options?.markers;
+  const markers: SliderSingleProps["marks"] = values?.markers;
 
   return (
     <Slider

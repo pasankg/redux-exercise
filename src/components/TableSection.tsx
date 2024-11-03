@@ -2,7 +2,7 @@ import { Table } from "antd";
 import type { TableColumnsType } from "antd";
 import { UserType } from "../types";
 import React, { useMemo } from "react";
-import { size, chain, includes, inRange } from "lodash";
+import { size, chain, includes, inRange, isEmpty } from "lodash";
 import { useSelector } from "react-redux";
 import { useGetUsersQuery } from "../quries";
 import { dayjs } from "../vendor";
@@ -64,19 +64,26 @@ const columns: TableColumnsType<UserType> = [
 const UserTable: React.FC = () => {
   const { data, isFetching } = useGetUsersQuery();
 
-  const selectedUsers = useSelector((state) => state.users.usernames); //retrieve data from slice
-  const selectedAgeRange = useSelector((state) => state.users.selectedAgeRange);
-  const selectedGender = useSelector((state) => state.users.selectedGenders);
-  const selectedDobDates = useSelector(
-    (state) => state.users.selectedDateOfBirthFilter
-  );
+  const {
+    name: selectedUsers,  // name as selectedUsers
+    dateOfBirth: selectedDobDates,
+    ageRange: selectedAgeRange,
+    gender: selectedGender,
+  } = useSelector((state) => state.users.filters);
+
+  // const selectedUsers = useSelector((state) => state.users.usernames); //retrieve data from slice
+  // const selectedAgeRange = useSelector((state) => state.users.selectedAgeRange);
+  // const selectedGender = useSelector((state) => state.users.selectedGenders);
+  // const selectedDobDates = useSelector(
+  //   (state) => state.users.selectedDateOfBirthFilter
+  // );
 
   const filteredUsers = useMemo(() => {
     return chain(data)
       .filter((user) =>
-        (size(selectedUsers) > 0
+        (!isEmpty(selectedUsers)
           ? includes(selectedUsers, user.username)
-          : false) &&
+          : true) &&
         (size(selectedGender) > 0
           ? includes(selectedGender, user.gender)
           : false) &&
